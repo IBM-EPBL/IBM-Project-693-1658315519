@@ -1,0 +1,2 @@
+Demo link:https://drive.google.com/file/d/1r3po09Xknr9T_8ZPiwycGppmwkyQRTwx/view?usp=sharing
+Dataset: Mnist dataset. Use mnist.load_data() command to load the dataset
