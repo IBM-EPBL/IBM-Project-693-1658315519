@@ -3,6 +3,7 @@ import os
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 from flask import Flask,render_template,request
+from PIL import Image
 
 app=Flask(__name__)
 
@@ -19,13 +20,19 @@ def upload():
         basepath=os.path.dirname(__file__)
         filepath=os.path.join(basepath,'uploads',f.filename)
         f.save(filepath)
-        img=image.load_img(filepath,target_size=(28,28))
-        x=image.img_to_array(img)
-        x=np.expand_dims(x,axis=0)
-        pred=np.argmax(model.predict(x),axis=1)
+        img = Image.open(filepath).convert("L")  # convert image to monochrome
+        img = img.resize((28, 28))  # resizing of input image
+
+        im2arr = np.array(img)  # converting to image
+        im2arr = im2arr.reshape(1, 28, 28, 1)  # reshaping according to our requirement
+
+        pred = model.predict(im2arr)
+
+        num = np.argmax(pred, axis=1)
+        
         index=['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine']
-        text="The Classified Digit is : " +str(index[pred[0]])
+        text="The Classified Digit is : " +str(index[num[0]])
 
     return text
 if __name__=='__main__':
-    app.run(debug=False)
+    app.run(debug=True)
